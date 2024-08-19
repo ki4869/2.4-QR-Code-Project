@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input {
+      padding: 10px;
+      width: 250px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      margin-right: 10px;
+    }
+    #qrcode {
+      position: relative;
+      top:50%;
+      left:40%;
+    }
+    #loader {
+      display: none;
+      border: 8px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 8px solid #3498db;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>QR Code Generator</h1>
+  <input type="text" id="urlInput" placeholder="Enter any URL" />
+  <br />
+  <button onclick="generateQRCode()">Generate QR Code</button>
+  <button onclick="removeQRCode()">Remove QR Code</button>
+  
+  <!-- Loader -->
+  <div id="loader"></div>
+
+  <!-- QR Code will be displayed here -->
+  <div id="qrcode"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+      window.onload = function() {
+      const savedURL = localStorage.getItem('savedURL');
+      if (savedURL) {
+        // Populate the input with the saved URL
+        document.getElementById('urlInput').value = savedURL;
+
+        // Generate the QR code for the saved URL
+        new QRCode(document.getElementById('qrcode'), {
+          text: savedURL,
+          width: 200,
+          height: 200
+        });
+      }
+    }
+    
+    function generateQRCode() {
+      const url = document.getElementById('urlInput').value;
+      
+      const urlRegex = /www\.com/;
+
+  if (!url || !urlRegex.test(url)) {
+    alert('Please enter a valid URL containing "www.com"');
+    return;
+  }
+      
+      // Show loader
+      document.getElementById('loader').style.display = 'block';
+
+      // Clear any existing QR codes
+      document.getElementById('qrcode').innerHTML = '';
+
+      // Simulate a delay to mimic loading time (optional)
+      setTimeout(() => {
+        // Generate the QR code after a delay (simulate network or processing time)
+        new QRCode(document.getElementById('qrcode'), {
+          text: url,
+          width: 200,
+          height: 200
+        });
+        
+        // Hide the loader once the QR code is generated
+        document.getElementById('loader').style.display = 'none';
+
+        // Optionally, save the URL to localStorage (simulating a backend file)
+        localStorage.setItem('savedURL', url);
+        console.log('URL saved: ' + url);
+      }, 2000); // 2 seconds delay to show the loader for demo purposes
+    }
+
+    function removeQRCode(){
+      document.getElementById('qrcode').innerHTML = '';
+       // Remove the saved URL from localStorage
+       localStorage.removeItem('savedURL');
+      console.log('QR code and saved URL removed.');
+      
+      // Optionally, clear the input field
+      document.getElementById('urlInput').value = '';
+    }
+  </script>
+</body>
+</html>
